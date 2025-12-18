@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Dog Tilt - Next.js & Socket.IO Deployment Guide
+This project consists of two parts: a Next.js Frontend (Monitor & Controller) and a Node.js Backend (Socket.IO server).
 
-## Getting Started
+🛠 1. Backend Deployment (AWS EC2 / Linux Server)
+The backend requires a persistent connection and cannot be run on serverless functions (like Vercel/Lambda).
 
-First, run the development server:
+Folder: Navigate to /server.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Setup: - Run npm install.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ensure port 8080 is open in the AWS Security Group (Inbound Rules).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+CORS Configuration:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+In server/index.js, update the origin array to include your final frontend URL (e.g., https://your-app.vercel.app).
 
-## Learn More
+Run: Use a process manager like pm2 to keep it running:
 
-To learn more about Next.js, take a look at the following resources:
+Bash
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+pm2 start index.js --name "dog-socket-server"
+🌐 2. Frontend Deployment (AWS Amplify / Vercel)
+The frontend is a standard Next.js app.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Environment Variables:
 
-## Deploy on Vercel
+You MUST set this variable in the AWS Amplify / Vercel dashboard: NEXT_PUBLIC_SOCKET_SERVER = http://your-ec2-ip-or-domain:8080
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Note: If the frontend is HTTPS, the backend must also be HTTPS (using an SSL certificate), or the browser will block the connection.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Build:
+
+Bash
+
+npm run build
+📱 Mobile Permissions (HTTPS Requirement)
+iOS/Safari: The DeviceOrientationEvent permission request only works over HTTPS.
+
+For local testing, use ngrok to provide an HTTPS tunnel to your local machine: ngrok http 3000.
+
+💡 One last tip for your friend
+If they are using AWS Amplify, remind them that they need to add the environment variable before they hit "Deploy," or the build won't "bake" the correct IP into the client-side code.
