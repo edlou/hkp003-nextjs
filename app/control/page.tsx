@@ -23,7 +23,10 @@ function Controller() {
     });
 
     setSocket(newSocket);
-    return () => { newSocket.disconnect(); };
+    return () => {
+      newSocket.off('connect');
+      newSocket.disconnect();
+    };
   }, [sessionId]); // Re-run if sessionId changes
 
   const startSensors = async () => {
