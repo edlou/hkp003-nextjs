@@ -6,16 +6,22 @@ import { io } from 'socket.io-client';
 export default function MonitorPage() {
   const [hasMounted, setHasMounted] = useState(false);
   const [tilt, setTilt] = useState(0);
-  const sessionId = "v3izpuw"; // Match this with your phone's sessionId
+  // const sessionId = "v3izpuw"; // Match this with your phone's sessionId
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
   useEffect(() => {
+    // Generate a random ID for the session
+    const randomId = Math.random().toString(36).substring(2, 8);
+    setSessionId(randomId);
+
     setHasMounted(true);
     // Use your IP for now, friend will change this to AWS URL later
     // const socket = io("http://192.168.1.60:8080");
     const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER || "http://192.168.1.60:8080");
 
     socket.on('connect', () => {
-      socket.emit('joinSession', sessionId);
+      socket.emit('joinSession', randomId);
+      // socket.emit('joinSession', sessionId);
     });
 
     socket.on('updateDisplay', (data) => {
