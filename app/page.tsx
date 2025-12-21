@@ -1,57 +1,54 @@
 'use client';
-import { QRCodeSVG } from 'qrcode.react';
-import { useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
+import Link from 'next/link';
+import Image from 'next/image';
+import 'animate.css';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+export default function LandingPage() {
 
-export default function MonitorPage() {
-  const [hasMounted, setHasMounted] = useState(false);
-  const [tilt, setTilt] = useState(0);
-  // const sessionId = "v3izpuw"; // Match this with your phone's sessionId
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const router = useRouter();
+  const handleStart = () => {
+    // 2. Trigger the "clicked" state
+    setIsTransitioning(true);
 
-  useEffect(() => {
-    // Generate a random ID for the session
-    const randomId = Math.random().toString(36).substring(2, 8);
-    setSessionId(randomId);
-
-    setHasMounted(true);
-    // Use your IP for now, friend will change this to AWS URL later
-    // const socket = io("http://192.168.1.60:8080");
-    const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER || "http://192.168.1.60:8080");
-
-    socket.on('connect', () => {
-      socket.emit('joinSession', randomId);
-      // socket.emit('joinSession', sessionId);
-    });
-
-    socket.on('updateDisplay', (data) => {
-      setTilt(data.angle); // Receive tilt from phone
-    });
-
-    return () => { socket.disconnect(); };
-  }, []);
-
-  if (!hasMounted) return null;
-
-  const qrUrl = `${window.location.origin}/control?sessionId=${sessionId}`;
-
+    // 3. Wait for the animation (e.g., 800ms) then navigate
+    setTimeout(() => {
+      router.push('/monitor'); // Ensure this matches your folder name (display or monitor)
+    }, 800);
+  };
   return (
-    <div style={{ textAlign: 'center', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-      <h1>Dog Monitor</h1>
+    <main className="flex flex-col items-center justify-center min-h-screen ">
+      {/* Container for content */}
+      <div className={`flex flex-col items-center justify-center border-4 border-red-600 w-fit h-fit px-10 py-12 rounded-3xl animate__animated  ${isTransitioning ? 'animate__fadeOutUp' : ''}`}>
 
-      {/* The Dog Box */}
-      <div style={{
-        width: '150px', height: '150px', background: '#f0ad4e', margin: '50px auto',
-        transform: `rotate(${tilt}deg)`, transition: 'transform 0.05s linear',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '20px'
-      }}>
-        🐶
-      </div>
+                {/* Title Section */}
+        <div className=" items-center mb-6 ">
+          <h1 className="text-6xl font-bold text-center text-red-600 ">
+            求籤 app
+          </h1>
+        </div>
 
-      <div style={{ background: 'white', padding: '10px', display: 'inline-block', margin: '0 auto' }}>
-        <QRCodeSVG value={qrUrl} size={150} />
+        <div className=''>
+          <Image src="/cartoonChar.svg" alt="3 god Image" width={300} height={300} className="mx-auto mb-6 animate__animated animate__heartBeat" />
+        </div>
+
+        {/* Action Button */}
+        <div className="">
+
+            <button onClick={handleStart} className="hover:scale-110 active:scale-95 transition-transform">
+              <Image src="/startButton.jpg" alt="Star Image" width={300} height={300} className="mx-auto" />
+            </button>
+        </div>
+
+        <div>
+          <p className="text-center text-2xl font-bold text-gray-600">
+            Click the button to start
+          </p>
+        </div>
+
+
       </div>
-      <p>Scan with phone to tilt the dog</p>
-    </div>
+    </main>
   );
 }
