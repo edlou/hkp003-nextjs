@@ -72,7 +72,12 @@ export default function Monitor() {
             className="relative flex items-center justify-center w-64 h-64 my-10 transition-transform duration-75 ease-linear"
             style={{ transform: `rotate(${tilt}deg)` }}
           >
-            <Image src="/draw.jpeg" alt="draw Image" width={150} height={150} />
+            <Image
+              src="/assets/i/draw.jpeg"
+              alt="draw Image"
+              width={150}
+              height={150}
+            />
           </div>
         </Container>
       </ContainerGroup>
