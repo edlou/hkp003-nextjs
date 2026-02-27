@@ -243,11 +243,6 @@ body main {
   width: 100%;
   margin: auto;
 }
-@media (width >= 64rem) {
-  body main {
-    width: var(--container-5xl);
-  }
-}
 
 /* foundation */
 a:link,
@@ -266,16 +261,53 @@ body {
 }
 
 /* layout */
-@media (width >= 64rem) {
-  main {
-    min-height: 25rem;
-  }
+body {
+  min-height: 100vh;
+}
+body#pageHome,
+body#pageMonitor {
+  background: url('/assets/i/logo.png') no-repeat center center;
+  background-size: 100vw 100vh;
 }
 
 #pageHome .container,
 #pageMonitor .container,
 #pageControl .container {
   text-align: center;
+}
+#pageHome .buttonDraw {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+#pageHome .buttonDraw button {
+  position: absolute;
+  top: 66%;
+  left: 60%;
+  cursor: pointer;
+  animation: buttonShake 2s ease-in-out infinite;
+}
+@keyframes buttonShake {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(-3deg);
+  }
+  20% {
+    transform: rotate(3deg);
+  }
+  30% {
+    transform: rotate(-3deg);
+  }
+  40% {
+    transform: rotate(3deg);
+  }
+  50%,
+  100% {
+    transform: rotate(0deg);
+  }
 }
 #pageHome img {
   margin: 0 auto 2rem;
@@ -285,15 +317,173 @@ body {
   margin: 0 auto;
 }
 #pageMonitor svg {
-  margin: 2rem auto;
+  margin: auto;
+}
+#pageMonitor .canvas {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  padding: 0;
 }
 #pageMonitor .targetObject {
+  width: 100vw;
+  height: 100vh;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: auto;
+}
+#pageMonitor .targetObject img {
+  position: absolute;
+  top: 66%;
+  left: 60%;
   transition-property: transform;
   transition-duration: 75ms;
   transition-timing-function: linear;
+}
+#pageMonitor .targetObject.active img {
+  animation: moveToCenter 1.2s ease-out forwards;
+}
+
+@keyframes moveToCenter {
+  0% {
+    top: 66%;
+    left: 60%;
+    width: 200px;
+    translate: 0 0;
+  }
+  50% {
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    translate: -50% -50%;
+  }
+  100% {
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    translate: -50% -50%;
+  }
+}
+#pageMonitor .shakePrompt {
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  translate: -50% 0;
+  text-align: center;
+  z-index: 10;
+  opacity: 0;
+}
+#pageMonitor .shakePrompt p {
+  color: var(--color-neutral-1000);
+}
+#pageMonitor .shakePrompt.fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+#pageMonitor .shakePrompt.fadeOut {
+  animation: fadeOut 2s ease-out forwards;
+}
+#pageMonitor .shakePrompt img {
+  display: block;
+  margin: 0 auto;
+  animation: shake 0.5s ease-in-out infinite;
+}
+#pageMonitor .shakePrompt p {
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: rotate(-15deg);
+  }
+  50% {
+    transform: rotate(15deg);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+#pageMonitor .result {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: 100;
+  text-align: center;
+}
+#pageMonitor .result span {
+  font-size: 8rem;
+  font-weight: 900;
+  color: var(--color-alert-300);
+  animation: fadeIn 0.5s ease-out forwards;
+  -webkit-text-stroke: 5px var(--color-neutral-1000);
+}
+#pageMonitor .canvas .qrCode {
+  position: absolute;
+  bottom: 21%;
+  left: 22%;
+}
+#pageMonitor .canvas .qrInfo {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+#pageControl .canvas {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  padding: 0;
+}
+#pageControl .shaker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  text-align: center;
+}
+#pageControl .shaker .clickHint {
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-neutral-000);
+  opacity: 0;
+}
+#pageControl .shaker .clickHint.fadeIn {
+  animation: fadeIn 0.5s ease-out 0.5s forwards;
+}
+#pageControl .shaker .clickHint.fadeOut {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+#pageControl .canvas .qrInfo {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+#pageControl .result {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: 100;
+  text-align: center;
+}
+#pageControl .result span {
+  font-size: 6rem;
+  font-weight: 900;
+  color: var(--color-alert-300);
+  animation: fadeIn 0.5s ease-out forwards;
+  -webkit-text-stroke: 4px var(--color-neutral-1000);
 }

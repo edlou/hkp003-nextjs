@@ -24,22 +24,16 @@ export default function Home() {
   return (
     <>
       <ContainerGroup>
-        <Container>
-          <Heading level={1}>求籤</Heading>
-
-          <Image src="/assets/i/logo.png" alt="Logo" width={600} height={300} />
-
-          <div>
-            <FormField
-              type="button"
-              fieldData={{
-                type: 'submit',
-                id: 'btEnter',
-                value: 'Enter',
-                className: 'primary',
-                onClick: handleStart,
-              }}
-            />
+        <Container className="full">
+          <div className="buttonDraw">
+            <button type="button" onClick={() => handleStart()}>
+              <Image
+                src="/assets/i/draw.png"
+                alt="Enter"
+                width={200}
+                height={200}
+              />
+            </button>
           </div>
         </Container>
       </ContainerGroup>

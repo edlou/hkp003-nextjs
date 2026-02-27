@@ -1,7 +1,7 @@
 'use client';
 
 // react
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // nextjs
 import { useParams } from 'next/navigation';
@@ -22,6 +22,10 @@ export default function Control() {
   const params = useParams();
   const sessionId = params.sessionId as string;
   const socketRef = useRef<Socket | null>(null);
+  const [randomNumber, setRandomNumber] = useState<number | null>(null);
+  const [showResult, setShowResult] = useState(false);
+  const [clicked, setClicked] = useState(false);
+  const isActiveRef = useRef(true); // Track if session is active
 
   useEffect(() => {
     if (!sessionId) return;
@@ -40,6 +44,14 @@ export default function Control() {
 
     newSocket.on('connect_error', (err) => {
       console.error('Socket connection error:', err.message);
+    });
+
+    // Listen for result from monitor
+    newSocket.on('displayResult', (data) => {
+      setRandomNumber(data.number);
+      setShowResult(true);
+      // Stop sending tilt data
+      isActiveRef.current = false;
     });
 
     return () => {
@@ -62,7 +74,8 @@ export default function Control() {
 
     window.addEventListener('deviceorientation', (e) => {
       const socket = socketRef.current;
-      if (socket && sessionId && e.gamma !== null) {
+      // Only send tilt if session is still active
+      if (socket && sessionId && e.gamma !== null && isActiveRef.current) {
         socket.emit('tiltCommand', { sessionId, angle: e.gamma });
       }
     });
@@ -73,30 +86,28 @@ export default function Control() {
   return (
     <>
       <ContainerGroup>
-        <Container>
-          <Heading level={1}>求籤 Control</Heading>
-          <Image
-            src="/assets/i/draw.png"
-            alt="draw Image"
-            width={300}
-            height={300}
-          />
-        </Container>
-      </ContainerGroup>
+        <Container className="canvas">
+          <div className="shaker">
+            <button type="button" onClick={() => { setClicked(true); startSensors(); }}>
+              <Image
+                src="/assets/i/draw.png"
+                alt="Start"
+                width={400}
+                height={400}
+              />
+            </button>
+            <p className={`clickHint ${clicked ? 'fadeOut' : 'fadeIn'}`}>Click</p>
+          </div>
 
-      <ContainerGroup>
-        <Container>
-          <p>Session: {sessionId}</p>
-          <div>
-            <FormField
-              type="button"
-              fieldData={{
-                type: 'submit',
-                id: 'btStart',
-                value: 'Start Control',
-                onClick: startSensors,
-              }}
-            />
+          {/* Result from monitor */}
+          {showResult && (
+            <div className="result">
+              <span>{randomNumber}</span>
+            </div>
+          )}
+
+          <div className="qrInfo">
+            <p>Session: {sessionId}</p>
           </div>
         </Container>
       </ContainerGroup>
