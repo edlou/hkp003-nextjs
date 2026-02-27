@@ -10,10 +10,6 @@ import Image from 'next/image';
 // socket
 import { io, Socket } from 'socket.io-client';
 
-// ui - atoms
-import Heading from '@/ui/atoms/heading';
-import FormField from '@/ui/atoms/formField';
-
 // ui - molecules
 import ContainerGroup from '@/ui/molecules/containerGroup';
 import Container from '@/ui/molecules/container';
@@ -88,7 +84,13 @@ export default function Control() {
       <ContainerGroup>
         <Container className="canvas">
           <div className="shaker">
-            <button type="button" onClick={() => { setClicked(true); startSensors(); }}>
+            <button
+              type="button"
+              onClick={() => {
+                setClicked(true);
+                startSensors();
+              }}
+            >
               <Image
                 src="/assets/i/draw.png"
                 alt="Start"
@@ -96,7 +98,9 @@ export default function Control() {
                 height={400}
               />
             </button>
-            <p className={`clickHint ${clicked ? 'fadeOut' : 'fadeIn'}`}>Click</p>
+            <p className={`clickHint ${clicked ? 'fadeOut' : 'fadeIn'}`}>
+              Click
+            </p>
           </div>
 
           {/* Result from monitor */}
