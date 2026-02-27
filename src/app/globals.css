@@ -262,13 +262,7 @@ a:active {
 }
 
 body {
-  background-color: var(--color-neutral-800);
-}
-main {
   background-color: var(--color-neutral-1000);
-  box-shadow:
-    -8px 0 10px -8px var(--color-neutral-600),
-    8px 0 10px -8px var(--color-neutral-600);
 }
 
 /* layout */
@@ -276,4 +270,30 @@ main {
   main {
     min-height: 25rem;
   }
+}
+
+#pageHome .container,
+#pageMonitor .container,
+#pageControl .container {
+  text-align: center;
+}
+#pageHome img {
+  margin: 0 auto 2rem;
+}
+#pageMonitor img,
+#pageControl img {
+  margin: 0 auto;
+}
+#pageMonitor svg {
+  margin: 2rem auto;
+}
+#pageMonitor .targetObject {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  transition-property: transform;
+  transition-duration: 75ms;
+  transition-timing-function: linear;
 }

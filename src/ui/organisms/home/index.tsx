@@ -27,15 +27,16 @@ export default function Home() {
         <Container>
           <Heading level={1}>求籤</Heading>
 
-          <Image src="/assets/i/logo.svg" alt="Logo" width={300} height={300} />
+          <Image src="/assets/i/logo.png" alt="Logo" width={600} height={300} />
 
           <div>
             <FormField
               type="button"
               fieldData={{
                 type: 'submit',
-                id: 'btStart',
-                value: 'Start',
+                id: 'btEnter',
+                value: 'Enter',
+                className: 'primary',
                 onClick: handleStart,
               }}
             />

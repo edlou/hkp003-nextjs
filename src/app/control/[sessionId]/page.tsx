@@ -10,7 +10,7 @@ import Control from '@/ui/organisms/control';
 
 export default function MainPage() {
   return (
-    <main role="main">
+    <main role="main" id="pageControl">
       <Control />
     </main>
   );

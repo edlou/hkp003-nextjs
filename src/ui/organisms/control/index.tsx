@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 
 // nextjs
 import { useParams } from 'next/navigation';
+import Image from 'next/image';
 
 // socket
 import { io, Socket } from 'socket.io-client';
@@ -74,8 +75,18 @@ export default function Control() {
       <ContainerGroup>
         <Container>
           <Heading level={1}>求籤 Control</Heading>
-          <p>Session: {sessionId}</p>
+          <Image
+            src="/assets/i/draw.png"
+            alt="draw Image"
+            width={300}
+            height={300}
+          />
+        </Container>
+      </ContainerGroup>
 
+      <ContainerGroup>
+        <Container>
+          <p>Session: {sessionId}</p>
           <div>
             <FormField
               type="button"

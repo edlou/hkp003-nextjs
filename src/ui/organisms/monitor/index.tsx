@@ -69,14 +69,14 @@ export default function Monitor() {
         <Container>
           <Heading level={1}>求籤</Heading>
           <div
-            className="relative flex items-center justify-center w-64 h-64 my-10 transition-transform duration-75 ease-linear"
+            className="targetObject"
             style={{ transform: `rotate(${tilt}deg)` }}
           >
             <Image
-              src="/assets/i/draw.jpeg"
+              src="/assets/i/draw.png"
               alt="draw Image"
-              width={150}
-              height={150}
+              width={300}
+              height={300}
             />
           </div>
         </Container>
