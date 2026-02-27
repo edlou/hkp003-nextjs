@@ -1,0 +1,336 @@
+/* buttonGroup */
+.buttonGroup {
+  display: flex;
+  row-gap: calc(var(--spacing) * 4);
+  flex-direction: column;
+  margin-top: 3rem;
+}
+
+@media (width >= 48rem) {
+  .buttonGroup {
+    column-gap: calc(var(--spacing) * 4);
+    flex-direction: row-reverse;
+  }
+}
+
+/* button - base */
+.formButton {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--color-button-bg-from),
+    var(--color-button-bg-to)
+  );
+  background-color: var(--color-button-bg-from);
+  border: calc(var(--spacing) * 0.25) solid var(--color-button-border);
+  color: var(--color-button-text);
+  cursor: pointer;
+  padding: var(--padding-button-y) var(--padding-button-x);
+  border-radius: var(--radius-button);
+  text-decoration: none;
+}
+
+/* button - link and image */
+a.formButton {
+  display: inline-block;
+  margin-top: 1rem;
+}
+.formButton img {
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+
+/* button - secondary */
+.formButton,
+.formButton:link,
+.formButton:visited {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--color-button-bg-from),
+    var(--color-button-bg-to)
+  );
+  background-color: var(--color-button-bg-from);
+  border-color: var(--color-button-border);
+  color: var(--color-button-text);
+  text-decoration: none;
+}
+.formButton:hover,
+.formButton:active {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--color-button-bg-from-active),
+    var(--color-button-bg-to-active)
+  );
+  background-color: var(--color-button-bg-from-active);
+  border-color: var(--color-button-border-active);
+  color: var(--color-button-text-active);
+  text-decoration: none;
+}
+
+/* button - tertiary */
+.formButton.tertiary,
+.formButton.tertiary:link,
+.formButton.tertiary:visited {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--color-button-bg-from-tertiary),
+    var(--color-button-bg-to-tertiary)
+  );
+  background-color: var(--color-button-bg-from-tertiary);
+  border-color: var(--color-button-border-tertiary);
+  color: var(--color-button-text-tertiary);
+}
+.formButton.tertiary:hover,
+.formButton.tertiary:active {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--color-button-bg-from-tertiary-active),
+    var(--color-button-bg-to-tertiary-active)
+  );
+  background-color: var(--color-button-bg-from-tertiary-active);
+  border-color: var(--color-button-border-tertiary-active);
+  color: var(--color-button-text-tertiary-active);
+}
+
+/* button - primary */
+.formButton.primary,
+.formButton.primary:link,
+.formButton.primary:visited {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--color-button-bg-from-primary),
+    var(--color-button-bg-to-primary)
+  );
+  background-color: var(--color-button-bg-from-primary);
+  border-color: var(--color-button-border-primary);
+  color: var(--color-button-text-primary);
+}
+.formButton.primary:hover,
+.formButton.primary:active {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--color-button-bg-from-primary-active),
+    var(--color-button-bg-to-primary-active)
+  );
+  background-color: var(--color-button-bg-from-primary-active);
+  border-color: var(--color-button-border-primary-active);
+  color: var(--color-button-text-primary-active);
+}
+
+/* button - danger */
+.formButton.danger,
+.formButton.danger:link,
+.formButton.danger:visited {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--color-button-bg-from-danger),
+    var(--color-button-bg-to-danger)
+  );
+  background-color: var(--color-button-bg-from-danger);
+  border-color: var(--color-button-border-danger);
+  color: var(--color-button-text-danger);
+}
+.formButton.danger:hover,
+.formButton.danger:active {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--color-button-bg-from-danger-active),
+    var(--color-button-bg-to-danger-active)
+  );
+  background-color: var(--color-button-bg-from-danger-active);
+  border-color: var(--color-button-border-danger-active);
+  color: var(--color-button-text-danger-active);
+}
+
+/* button - disabled */
+.formButton:disabled,
+.formButton:disabled:link,
+.formButton:disabled:visited {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--color-button-bg-from-disabled),
+    var(--color-button-bg-to-disabled)
+  );
+  background-color: var(--color-button-bg-from-disabled);
+  border-color: var(--color-button-border-disabled);
+  color: var(--color-button-text-disabled);
+  cursor: default;
+}
+.formButton:disabled:hover,
+.formButton:disabled:active {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--color-button-bg-from-disabled-active),
+    var(--color-button-bg-to-disabled-active)
+  );
+  background-color: var(--color-button-bg-from-disabled-active);
+  border-color: var(--color-button-border-disabled-active);
+  color: var(--color-button-text-disabled-active);
+}
+
+/* input */
+.formInput,
+.formTextarea,
+.formRichTextEditor {
+  display: flex;
+  flex-direction: column;
+}
+.formInput > input,
+.formTextarea > textarea,
+.formRichTextEditor .ProseMirror {
+  border: calc(var(--spacing) * 0.25) solid #000;
+  padding: var(--padding-button-y) var(--padding-button-y);
+  border-radius: var(--radius-button);
+}
+.formRichTextEditor .ProseMirror {
+  border-radius: 0 0 0.375rem 0.375rem;
+  min-height: 10rem;
+}
+
+/* checkbox */
+.formCheckbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+.formCheckbox > input {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--color-primary-200);
+}
+
+/* radio */
+.formRadio > div {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+.formRadio.horizontal > div {
+  display: flex;
+  flex-direction: row;
+  gap: calc(var(--spacing) * 4);
+}
+.formRadio > div > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+.formRadio > div > div > input {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--color-primary-200);
+}
+.formRadio.formError > div > div > label {
+  color: var(--color-alert-200);
+  accent-color: var(--color-alert-200);
+}
+.formRadio.formError > div > div > input {
+  accent-color: var(--color-alert-200);
+}
+
+/* checkbox - asButton */
+.formCheckbox.asButton {
+  margin-bottom: calc(var(--spacing) * 4);
+}
+.formCheckbox.asButton > input {
+  display: none;
+}
+.formCheckbox.asButton > label {
+  background-color: var(--color-neutral-1000);
+  border: calc(var(--spacing) * 0.25) solid var(--color-neutral-300);
+  color: var(--color-neutral-300);
+  cursor: pointer;
+  padding: var(--padding-button-y) var(--padding-button-x);
+  border-radius: var(--radius-button);
+  width: 100%;
+  text-align: center;
+}
+.formCheckbox.asButton > label,
+.formCheckbox.asButton > label:link,
+.formCheckbox.asButton > label:visited {
+  background-color: var(--color-neutral-1000);
+  border: calc(var(--spacing) * 0.25) solid var(--color-neutral-300);
+  color: var(--color-neutral-300);
+}
+.formCheckbox.asButton > label:hover,
+.formCheckbox.asButton > label:active {
+  background-color: var(--color-neutral-700);
+  border: calc(var(--spacing) * 0.25) solid var(--color-neutral-000);
+  color: var(--color-neutral-000);
+}
+.formCheckbox.asButton > input:checked + label {
+  background-color: var(--color-success-700);
+  border: calc(var(--spacing) * 0.25) solid var(--color-success-000);
+  color: var(--color-success-000);
+}
+.formCheckbox.asButton > input:checked + label {
+  position: relative;
+}
+.formCheckbox.asButton > input:checked + label::after {
+  content: '✔';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+}
+
+/* radio - asButton */
+.formRadio.asButton > div {
+  gap: calc(var(--spacing) * 4);
+}
+.formRadio.asButton > div > div > input {
+  display: none;
+}
+.formRadio.asButton > div > div > label {
+  background-color: var(--color-neutral-1000);
+  border: calc(var(--spacing) * 0.25) solid var(--color-neutral-300);
+  color: var(--color-neutral-300);
+  cursor: pointer;
+  padding: var(--padding-button-y) var(--padding-button-x);
+  border-radius: var(--radius-button);
+  width: 100%;
+  text-align: center;
+}
+.formRadio.asButton > div > div > label,
+.formRadio.asButton > div > div > label:link,
+.formRadio.asButton > div > div > label:visited {
+  background-color: var(--color-neutral-1000);
+  border: calc(var(--spacing) * 0.25) solid var(--color-neutral-300);
+  color: var(--color-neutral-300);
+}
+.formRadio.asButton > div > div > label:hover,
+.formRadio.asButton > div > div > label:active {
+  background-color: var(--color-neutral-700);
+  border: calc(var(--spacing) * 0.25) solid var(--color-neutral-000);
+  color: var(--color-neutral-000);
+}
+.formRadio.asButton > div > div > input:checked + label {
+  background-color: var(--color-success-700);
+  border: calc(var(--spacing) * 0.25) solid var(--color-success-000);
+  color: var(--color-success-000);
+}
+.formRadio.asButton > div > div > input:checked + label {
+  position: relative;
+}
+.formRadio.asButton > div > div > input:checked + label::after {
+  content: '✔';
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+}
+
+.formRequired label {
+  font-weight: 400;
+}
+.formError input,
+.formError textarea,
+.formError .ProseMirror {
+  border-color: var(--color-alert-200);
+}
+.formError .helper {
+  color: var(--color-alert-200);
+}
