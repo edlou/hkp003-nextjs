@@ -266,7 +266,7 @@ body {
 }
 body#pageHome,
 body#pageMonitor {
-  background: url('/assets/i/logo.png') no-repeat center center;
+  background: url('/assets/i/background.png') no-repeat center center;
   background-size: 100vw 100vh;
 }
 
@@ -282,8 +282,8 @@ body#pageMonitor {
 }
 #pageHome .buttonDraw button {
   position: absolute;
-  top: 66%;
-  left: 60%;
+  top: 55%;
+  left: 58%;
   cursor: pointer;
   animation: buttonShake 2s ease-in-out infinite;
 }
@@ -330,10 +330,13 @@ body#pageMonitor {
   height: 100vh;
   position: relative;
 }
+#pageMonitor .targetObject.straighten {
+  transition: transform 0.5s ease-out;
+}
 #pageMonitor .targetObject img {
   position: absolute;
-  top: 66%;
-  left: 60%;
+  top: 55%;
+  left: 58%;
   transition-property: transform;
   transition-duration: 75ms;
   transition-timing-function: linear;
@@ -344,19 +347,19 @@ body#pageMonitor {
 
 @keyframes moveToCenter {
   0% {
-    top: 66%;
-    left: 60%;
+    top: 55%;
+    left: 58%;
     width: 200px;
     translate: 0 0;
   }
   50% {
-    top: 50%;
+    top: 45%;
     left: 50%;
     width: 200px;
     translate: -50% -50%;
   }
   100% {
-    top: 50%;
+    top: 45%;
     left: 50%;
     width: 300px;
     translate: -50% -50%;
@@ -417,7 +420,7 @@ body#pageMonitor {
 }
 #pageMonitor .result {
   position: absolute;
-  top: 70%;
+  top: 80%;
   left: 50%;
   translate: -50% -50%;
   z-index: 100;
@@ -449,7 +452,7 @@ body#pageMonitor {
 }
 #pageControl .shaker {
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   translate: -50% -50%;
   text-align: center;

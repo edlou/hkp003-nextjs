@@ -30,9 +30,11 @@ export default function Monitor() {
   const [hideShakePrompt, setHideShakePrompt] = useState(false); // Step 5: fade out prompt
   const [showResult, setShowResult] = useState(false); // Step 6: show number
   const [randomNumber, setRandomNumber] = useState<number | null>(null);
+  const [imageSelected, setImageSelected] = useState(false); // Step 6b: swap image
 
   const hasStartedShaking = useRef(false);
   const socketRef = useRef<ReturnType<typeof io> | null>(null);
+  const isActiveRef = useRef(true); // Track if we should still update tilt
 
   useEffect(() => {
     // Generate a random ID for the session
@@ -56,7 +58,10 @@ export default function Monitor() {
     });
 
     socket.on('updateDisplay', (data) => {
-      setTilt(data.angle);
+      // Only update tilt if session is still active
+      if (isActiveRef.current) {
+        setTilt(data.angle);
+      }
 
       // Step 3: First update means user joined
       setUserJoined(true);
@@ -93,9 +98,19 @@ export default function Monitor() {
     }
   }, [shakingStarted, hideShakePrompt]);
 
-  // Step 6: Show result 5 seconds after shaking starts (2s + 3s more)
+  // Step 6a: 3s after shaking starts → swap image
   useEffect(() => {
-    if (shakingStarted && !showResult && sessionId) {
+    if (shakingStarted && !imageSelected) {
+      const timer = setTimeout(() => {
+        setImageSelected(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [shakingStarted, imageSelected]);
+
+  // Step 6b: 2s after image swap → show number, emit to control
+  useEffect(() => {
+    if (imageSelected && !showResult && sessionId) {
       const timer = setTimeout(() => {
         const number = Math.floor(Math.random() * 100) + 1;
         setRandomNumber(number);
@@ -104,10 +119,18 @@ export default function Monitor() {
         if (socketRef.current) {
           socketRef.current.emit('showResult', { sessionId, number });
         }
-      }, 5000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [shakingStarted, showResult, sessionId]);
+  }, [imageSelected, showResult, sessionId]);
+
+  // Step 6c: After showing result → stop tilt updates and straighten image
+  useEffect(() => {
+    if (showResult) {
+      isActiveRef.current = false; // Stop accepting tilt updates
+      setTilt(0);
+    }
+  }, [showResult]);
 
   // Step 7: Redirect to home 10 seconds after result shows
   useEffect(() => {
@@ -136,11 +159,11 @@ export default function Monitor() {
       <ContainerGroup>
         <Container className="canvas">
           <div
-            className={`targetObject ${userJoined ? 'active' : ''}`}
+            className={`targetObject ${userJoined ? 'active' : ''} ${showResult ? 'straighten' : ''}`}
             style={{ transform: `rotate(${tilt}deg)` }}
           >
             <Image
-              src="/assets/i/draw.png"
+              src={imageSelected ? '/assets/i/draw-selected.png' : '/assets/i/draw.png'}
               alt="draw Image"
               width={200}
               height={200}
