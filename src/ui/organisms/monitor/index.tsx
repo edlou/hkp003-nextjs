@@ -13,6 +13,16 @@ import { QRCodeSVG } from 'qrcode.react';
 // socket
 import { io } from 'socket.io-client';
 
+// reading data
+import readingData from '@/../public/assets/r/reading.json';
+
+// types
+interface Reading {
+  number: number;
+  category: string;
+  poem: string;
+}
+
 // ui - molecules
 import ContainerGroup from '@/ui/molecules/containerGroup';
 import Container from '@/ui/molecules/container';
@@ -29,7 +39,7 @@ export default function Monitor() {
   const [shakingStarted, setShakingStarted] = useState(false); // Step 5: user shaking
   const [hideShakePrompt, setHideShakePrompt] = useState(false); // Step 5: fade out prompt
   const [showResult, setShowResult] = useState(false); // Step 6: show number
-  const [randomNumber, setRandomNumber] = useState<number | null>(null);
+  const [selectedReading, setSelectedReading] = useState<Reading | null>(null);
   const [imageSelected, setImageSelected] = useState(false); // Step 6b: swap image
 
   const hasStartedShaking = useRef(false);
@@ -113,11 +123,12 @@ export default function Monitor() {
     if (imageSelected && !showResult && sessionId) {
       const timer = setTimeout(() => {
         const number = Math.floor(Math.random() * 100) + 1;
-        setRandomNumber(number);
+        const reading = (readingData as Reading[]).find((r) => r.number === number) || null;
+        setSelectedReading(reading);
         setShowResult(true);
-        // Emit result to control page
-        if (socketRef.current) {
-          socketRef.current.emit('showResult', { sessionId, number });
+        // Emit result to control page (send full reading data)
+        if (socketRef.current && reading) {
+          socketRef.current.emit('showResult', { sessionId, reading });
         }
       }, 2000);
       return () => clearTimeout(timer);
@@ -186,9 +197,10 @@ export default function Monitor() {
           )}
 
           {/* Step 6: Random number result */}
-          {showResult && (
+          {showResult && selectedReading && (
             <div className="result">
-              <span>{randomNumber}</span>
+              <span className="number">{selectedReading.number}</span>
+              <span className="category">{selectedReading.category}</span>
             </div>
           )}
 

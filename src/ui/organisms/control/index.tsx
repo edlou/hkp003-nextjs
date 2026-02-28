@@ -14,11 +14,18 @@ import { io, Socket } from 'socket.io-client';
 import ContainerGroup from '@/ui/molecules/containerGroup';
 import Container from '@/ui/molecules/container';
 
+// types
+interface Reading {
+  number: number;
+  category: string;
+  poem: string;
+}
+
 export default function Control() {
   const params = useParams();
   const sessionId = params.sessionId as string;
   const socketRef = useRef<Socket | null>(null);
-  const [randomNumber, setRandomNumber] = useState<number | null>(null);
+  const [selectedReading, setSelectedReading] = useState<Reading | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [clicked, setClicked] = useState(false);
   const isActiveRef = useRef(true); // Track if session is active
@@ -44,7 +51,7 @@ export default function Control() {
 
     // Listen for result from monitor
     newSocket.on('displayResult', (data) => {
-      setRandomNumber(data.number);
+      setSelectedReading(data.reading);
       setShowResult(true);
       // Stop sending tilt data
       isActiveRef.current = false;
@@ -83,31 +90,45 @@ export default function Control() {
     <>
       <ContainerGroup>
         <Container className="canvas">
-          <div className="shaker">
-            <button
-              type="button"
-              onClick={() => {
-                setClicked(true);
-                startSensors();
-              }}
-            >
-              <Image
-                src="/assets/i/draw.png"
-                alt="Start"
-                width={400}
-                height={400}
-              />
-            </button>
-            <p className={`clickHint ${clicked ? 'fadeOut' : 'fadeIn'}`}>
-              Click
-            </p>
-          </div>
+          {!showResult && (
+            <div className="shaker">
+              <button
+                type="button"
+                onClick={() => {
+                  setClicked(true);
+                  startSensors();
+                }}
+              >
+                <Image
+                  src="/assets/i/draw.png"
+                  alt="Start"
+                  width={400}
+                  height={400}
+                />
+              </button>
+              <p className={`clickHint ${clicked ? 'fadeOut' : 'fadeIn'}`}>
+                Click
+              </p>
+            </div>
+          )}
 
           {/* Result from monitor */}
-          {showResult && (
-            <div className="result">
-              <span>{randomNumber}</span>
-            </div>
+          {showResult && selectedReading && (
+            <>
+              <div className="shaker">
+                <Image
+                  src="/assets/i/draw.png"
+                  alt="Start"
+                  width={400}
+                  height={400}
+                />
+              </div>
+              <div className="result">
+                <span className="number">{selectedReading.number}</span>
+                <span className="category">{selectedReading.category}</span>
+                <p className="poem">{selectedReading.poem}</p>
+              </div>
+            </>
           )}
 
           <div className="qrInfo">
