@@ -63,27 +63,51 @@ export default function Control() {
   }, [sessionId]);
 
   const startSensors = async () => {
-    // iOS Permission Check
+    // iOS Permission Check for DeviceMotion
     if (
-      typeof (DeviceOrientationEvent as any).requestPermission === 'function'
+      typeof (DeviceMotionEvent as any).requestPermission === 'function'
     ) {
       try {
-        const res = await (DeviceOrientationEvent as any).requestPermission();
+        const res = await (DeviceMotionEvent as any).requestPermission();
         if (res !== 'granted') return alert('Permission denied');
       } catch (err) {
-        console.error('DeviceOrientation permission error:', err);
+        console.error('DeviceMotion permission error:', err);
       }
     }
 
-    window.addEventListener('deviceorientation', (e) => {
+    // Track tilt angles based on acceleration
+    let currentTiltX = 0; // forward/backward
+    let currentTiltZ = 0; // rotation
+
+    window.addEventListener('devicemotion', (e) => {
       const socket = socketRef.current;
-      // Only send tilt if session is still active
-      if (socket && sessionId && e.gamma !== null && isActiveRef.current) {
-        socket.emit('tiltCommand', { sessionId, angle: e.gamma });
-      }
+      if (!socket || !sessionId || !isActiveRef.current) return;
+
+      const accel = e.accelerationIncludingGravity;
+      if (!accel || accel.z === null || accel.x === null) return;
+
+      // z-axis: forward/backward tilt (phone tilting toward/away from user)
+      // x-axis: side rotation (phone tilting left/right)
+      const zAccel = accel.z;
+      const xAccel = accel.x;
+
+      // Convert acceleration to tilt angles
+      // Increased forward/backward range to ±45 degrees
+      const targetTiltX = Math.max(-45, Math.min(45, zAccel * 5));
+      const targetTiltZ = Math.max(-15, Math.min(15, xAccel * 2));
+
+      // More smoothing to reduce choppiness (0.5/0.5 for smoother motion)
+      currentTiltX = currentTiltX * 0.5 + targetTiltX * 0.5;
+      currentTiltZ = currentTiltZ * 0.5 + targetTiltZ * 0.5;
+
+      socket.emit('tiltCommand', {
+        sessionId,
+        angleX: currentTiltX,
+        angleZ: currentTiltZ
+      });
     });
 
-    alert('Sensors started! Tilt your phone.');
+    alert('Sensors started! Shake your phone like a fortune stick tube!');
   };
 
   return (

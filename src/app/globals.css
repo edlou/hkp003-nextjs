@@ -324,11 +324,15 @@ body#pageMonitor {
   height: 100vh;
   position: relative;
   padding: 0;
+  perspective: 1000px; /* Enable 3D perspective */
 }
 #pageMonitor .targetObject {
   width: 100vw;
   height: 100vh;
   position: relative;
+  transform-style: preserve-3d;
+  transition: transform 120ms ease-out;
+  transform-origin: 50% 65%; /* Pivot from bottom of the image area */
 }
 #pageMonitor .targetObject.straighten {
   transition: transform 0.5s ease-out;
@@ -337,9 +341,6 @@ body#pageMonitor {
   position: absolute;
   top: 55%;
   left: 58%;
-  transition-property: transform;
-  transition-duration: 75ms;
-  transition-timing-function: linear;
 }
 #pageMonitor .targetObject.active img {
   animation: moveToCenter 1.2s ease-out forwards;
@@ -445,8 +446,8 @@ body#pageMonitor {
 }
 #pageMonitor .canvas .qrCode {
   position: absolute;
-  bottom: 21%;
-  left: 22%;
+  bottom: 11%;
+  left: 6%;
 }
 #pageMonitor .canvas .qrInfo {
   position: absolute;

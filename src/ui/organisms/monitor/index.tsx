@@ -30,7 +30,8 @@ import Container from '@/ui/molecules/container';
 export default function Monitor() {
   const router = useRouter();
   const [hasMounted, setHasMounted] = useState(false);
-  const [tilt, setTilt] = useState(0);
+  const [tiltX, setTiltX] = useState(0); // forward/backward
+  const [tiltZ, setTiltZ] = useState(0); // rotation
   const [sessionId, setSessionId] = useState<string | null>(null);
 
   // Flow states
@@ -70,14 +71,16 @@ export default function Monitor() {
     socket.on('updateDisplay', (data) => {
       // Only update tilt if session is still active
       if (isActiveRef.current) {
-        setTilt(data.angle);
+        setTiltX(data.angleX ?? 0);
+        setTiltZ(data.angleZ ?? 0);
       }
 
       // Step 3: First update means user joined
       setUserJoined(true);
 
-      // Step 5: Detect shaking (significant tilt change)
-      if (!hasStartedShaking.current && Math.abs(data.angle) > 5) {
+      // Step 5: Detect shaking (significant tilt change in either axis)
+      const totalMotion = Math.abs(data.angleX ?? 0) + Math.abs(data.angleZ ?? 0);
+      if (!hasStartedShaking.current && totalMotion > 8) {
         hasStartedShaking.current = true;
         setShakingStarted(true);
       }
@@ -139,7 +142,8 @@ export default function Monitor() {
   useEffect(() => {
     if (showResult) {
       isActiveRef.current = false; // Stop accepting tilt updates
-      setTilt(0);
+      setTiltX(0);
+      setTiltZ(0);
     }
   }, [showResult]);
 
@@ -171,7 +175,7 @@ export default function Monitor() {
         <Container className="canvas">
           <div
             className={`targetObject ${userJoined ? 'active' : ''} ${showResult ? 'straighten' : ''}`}
-            style={{ transform: `rotate(${tilt}deg)` }}
+            style={{ transform: `rotateX(${tiltX}deg) rotateZ(${tiltZ}deg)` }}
           >
             <Image
               src={imageSelected ? '/assets/i/draw-selected.png' : '/assets/i/draw.png'}
