@@ -28,6 +28,7 @@ export default function Control() {
   const [selectedReading, setSelectedReading] = useState<Reading | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [clicked, setClicked] = useState(false);
+  const [showShakeText, setShowShakeText] = useState(false);
   const isActiveRef = useRef(true); // Track if session is active
 
   useEffect(() => {
@@ -43,6 +44,8 @@ export default function Control() {
     newSocket.on('connect', () => {
       console.log('Connected! Joining session:', sessionId);
       newSocket.emit('joinSession', sessionId);
+      // Notify monitor that control page has loaded
+      newSocket.emit('controlJoined', { sessionId });
     });
 
     newSocket.on('connect_error', (err) => {
@@ -69,9 +72,13 @@ export default function Control() {
     ) {
       try {
         const res = await (DeviceMotionEvent as any).requestPermission();
-        if (res !== 'granted') return alert('Permission denied');
+        if (res !== 'granted') {
+          console.error('Permission denied');
+          return;
+        }
       } catch (err) {
         console.error('DeviceMotion permission error:', err);
+        return;
       }
     }
 
@@ -107,7 +114,14 @@ export default function Control() {
       });
     });
 
-    alert('Sensors started! Shake your phone like a fortune stick tube!');
+    // Notify monitor that control is ready (user tapped)
+    const socket = socketRef.current;
+    if (socket) {
+      socket.emit('controlReady', { sessionId });
+    }
+
+    // Show "Shake" text below the image
+    setShowShakeText(true);
   };
 
   return (
@@ -130,9 +144,14 @@ export default function Control() {
                   height={400}
                 />
               </button>
-              <p className={`clickHint ${clicked ? 'fadeOut' : 'fadeIn'}`}>
-                Click
-              </p>
+              {!showShakeText && (
+                <p className={`clickHint ${clicked ? 'fadeOut' : 'fadeIn'}`}>
+                  Click
+                </p>
+              )}
+              {showShakeText && (
+                <p className="shakeHint fadeIn">Shake</p>
+              )}
             </div>
           )}
 

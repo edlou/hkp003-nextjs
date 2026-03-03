@@ -35,13 +35,17 @@ export default function Monitor() {
   const [sessionId, setSessionId] = useState<string | null>(null);
 
   // Flow states
+  const [controlLoaded, setControlLoaded] = useState(false); // Step 2: control page loaded
+  const [controlReady, setControlReady] = useState(false); // Step 3: user tapped to start
   const [userJoined, setUserJoined] = useState(false); // Step 3: phone connected
+  const [showPhoneShake, setShowPhoneShake] = useState(false); // Step 3b: show phone shake overlay
   const [showShakePrompt, setShowShakePrompt] = useState(false); // Step 4: after animation
   const [shakingStarted, setShakingStarted] = useState(false); // Step 5: user shaking
   const [hideShakePrompt, setHideShakePrompt] = useState(false); // Step 5: fade out prompt
   const [showResult, setShowResult] = useState(false); // Step 6: show number
   const [selectedReading, setSelectedReading] = useState<Reading | null>(null);
   const [imageSelected, setImageSelected] = useState(false); // Step 6b: swap image
+  const [movingBack, setMovingBack] = useState(false); // Step 7: move image back
 
   const hasStartedShaking = useRef(false);
   const socketRef = useRef<ReturnType<typeof io> | null>(null);
@@ -68,15 +72,28 @@ export default function Monitor() {
       console.error('Socket connection error:', err.message);
     });
 
+    // Control page has loaded (user scanned QR)
+    socket.on('controlJoined', () => {
+      setControlLoaded(true);
+    });
+
+    // Control is ready (user tapped to start sensors)
+    socket.on('controlReady', () => {
+      setControlReady(true);
+      setUserJoined(true);
+      // Show phone shake overlay
+      setShowPhoneShake(true);
+      setTimeout(() => {
+        setShowPhoneShake(false);
+      }, 2000);
+    });
+
     socket.on('updateDisplay', (data) => {
       // Only update tilt if session is still active
       if (isActiveRef.current) {
         setTiltX(data.angleX ?? 0);
         setTiltZ(data.angleZ ?? 0);
       }
-
-      // Step 3: First update means user joined
-      setUserJoined(true);
 
       // Step 5: Detect shaking (significant tilt change in either axis)
       const totalMotion = Math.abs(data.angleX ?? 0) + Math.abs(data.angleZ ?? 0);
@@ -147,19 +164,30 @@ export default function Monitor() {
     }
   }, [showResult]);
 
-  // Step 7: Redirect to home 10 seconds after result shows
+  // Step 7: Start moving back animation 8 seconds after result shows
   useEffect(() => {
-    if (showResult) {
+    if (showResult && !movingBack) {
+      const timer = setTimeout(() => {
+        setMovingBack(true);
+        setImageSelected(false); // Swap back to draw.png
+      }, 8000);
+      return () => clearTimeout(timer);
+    }
+  }, [showResult, movingBack]);
+
+  // Step 8: Redirect to home after move-back animation completes (2s)
+  useEffect(() => {
+    if (movingBack) {
       const timer = setTimeout(() => {
         // Disconnect socket and redirect
         if (socketRef.current) {
           socketRef.current.disconnect();
         }
         router.push('/');
-      }, 10000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [showResult, router]);
+  }, [movingBack, router]);
 
   // Wait until both mounted and sessionId is ready
   if (!hasMounted || !sessionId) return null;
@@ -174,7 +202,7 @@ export default function Monitor() {
       <ContainerGroup>
         <Container className="canvas">
           <div
-            className={`targetObject ${userJoined ? 'active' : ''} ${showResult ? 'straighten' : ''}`}
+            className={`targetObject ${userJoined ? 'active' : ''} ${showResult ? 'straighten' : ''} ${movingBack ? 'movingBack' : ''}`}
             style={{ transform: `rotateX(${tiltX}deg) rotateZ(${tiltZ}deg)` }}
           >
             <Image
@@ -201,19 +229,48 @@ export default function Monitor() {
           )}
 
           {/* Step 6: Random number result */}
-          {showResult && selectedReading && (
+          {showResult && selectedReading && !movingBack && (
             <div className="result">
               <span className="number">{selectedReading.number}</span>
               <span className="category">{selectedReading.category}</span>
             </div>
           )}
 
-          <div className="qrCode">
-            <QRCodeSVG value={qrUrl} size={50} />
-          </div>
-          <div className="qrInfo">
-            <p>Session: {sessionId}</p>
-          </div>
+          {/* QR Code Overlay - show QR or "tap" message */}
+          {!controlReady && (
+            <div className="qr-overlay">
+              {!controlLoaded ? (
+                <>
+                  <div className="qrCode">
+                    <QRCodeSVG value={qrUrl} size={200} />
+                  </div>
+                  <div className="qrInfo">
+                    <p>Session: {sessionId}</p>
+                    <p className="join">Scan QR to join</p>
+                  </div>
+                </>
+              ) : (
+                <div className="qrInfo">
+                  <p className="tap-prompt">Tap the 籤筒 on your phone to start</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Phone Shake Animation */}
+          {showPhoneShake && (
+            <div className="phone-shake-overlay">
+              <Image
+                src="/assets/i/phone-shake.svg"
+                alt="Shake your phone"
+                width={300}
+                height={300}
+                className="phone-shake-image"
+                unoptimized
+              />
+              <p className="phone-shake-message">Shake the 籤筒!</p>
+            </div>
+          )}
         </Container>
       </ContainerGroup>
     </>

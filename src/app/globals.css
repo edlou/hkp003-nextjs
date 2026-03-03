@@ -267,7 +267,7 @@ body {
 body#pageHome,
 body#pageMonitor {
   background: url('/assets/i/background.png') no-repeat center center;
-  background-size: 100vw 100vh;
+  background-size: cover;
 }
 
 #pageHome .container,
@@ -283,9 +283,17 @@ body#pageMonitor {
 #pageHome .buttonDraw button {
   position: absolute;
   top: 55%;
-  left: 58%;
+  left: 60%;
+  translate: -50% 0;
   cursor: pointer;
   animation: buttonShake 2s ease-in-out infinite;
+}
+
+@media (width >= 94rem) {
+  #pageHome .buttonDraw button {
+    top: 61%;
+    left: 60%;
+  }
 }
 @keyframes buttonShake {
   0%,
@@ -316,9 +324,6 @@ body#pageMonitor {
 #pageControl img {
   margin: 0 auto;
 }
-#pageMonitor svg {
-  margin: auto;
-}
 #pageMonitor .canvas {
   width: 100vw;
   height: 100vh;
@@ -340,18 +345,32 @@ body#pageMonitor {
 #pageMonitor .targetObject img {
   position: absolute;
   top: 55%;
-  left: 58%;
+  left: 60%;
+  translate: -50% 0;
 }
+
 #pageMonitor .targetObject.active img {
   animation: moveToCenter 1.2s ease-out forwards;
+}
+
+@media (width >= 94rem) {
+  #pageMonitor .targetObject img {
+    position: absolute;
+    top: 61%;
+    left: 60%;
+    translate: -50% 0;
+  }
+  #pageMonitor .targetObject.active img {
+    animation: moveToCenterLG 1.2s ease-out forwards;
+  }
 }
 
 @keyframes moveToCenter {
   0% {
     top: 55%;
-    left: 58%;
+    left: 60%;
     width: 200px;
-    translate: 0 0;
+    translate: -50% 0;
   }
   50% {
     top: 45%;
@@ -366,6 +385,79 @@ body#pageMonitor {
     translate: -50% -50%;
   }
 }
+@keyframes moveToCenterLG {
+  0% {
+    top: 61%;
+    left: 60%;
+    width: 200px;
+    translate: -50% 0;
+  }
+  50% {
+    top: 45%;
+    left: 50%;
+    width: 200px;
+    translate: -50% -50%;
+  }
+  100% {
+    top: 45%;
+    left: 50%;
+    width: 300px;
+    translate: -50% -50%;
+  }
+}
+
+/* Move back animation */
+#pageMonitor .targetObject.movingBack img {
+  animation: moveBack 2s ease-in-out forwards;
+}
+
+@media (width >= 94rem) {
+  #pageMonitor .targetObject.movingBack img {
+    animation: moveBackLG 2s ease-in-out forwards;
+  }
+}
+
+@keyframes moveBack {
+  0% {
+    top: 45%;
+    left: 50%;
+    width: 300px;
+    translate: -50% -50%;
+  }
+  50% {
+    top: 45%;
+    left: 50%;
+    width: 200px;
+    translate: -50% -50%;
+  }
+  100% {
+    top: 55%;
+    left: 60%;
+    width: 200px;
+    translate: -50% 0;
+  }
+}
+@keyframes moveBackLG {
+  0% {
+    top: 45%;
+    left: 50%;
+    width: 300px;
+    translate: -50% -50%;
+  }
+  50% {
+    top: 45%;
+    left: 50%;
+    width: 200px;
+    translate: -50% -50%;
+  }
+  100% {
+    top: 61%;
+    left: 60%;
+    width: 200px;
+    translate: -50% 0;
+  }
+}
+
 #pageMonitor .shakePrompt {
   position: absolute;
   top: 65%;
@@ -444,16 +536,6 @@ body#pageMonitor {
   opacity: 0;
   -webkit-text-stroke: 2px var(--color-neutral-1000);
 }
-#pageMonitor .canvas .qrCode {
-  position: absolute;
-  bottom: 11%;
-  left: 6%;
-}
-#pageMonitor .canvas .qrInfo {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
 
 #pageControl .canvas {
   width: 100vw;
@@ -520,4 +602,128 @@ body#pageMonitor {
   animation: fadeIn 0.5s ease-out 0.5s forwards;
   opacity: 0;
   max-width: 90vw;
+}
+#pageControl .shaker .shakeHint {
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-neutral-000);
+  opacity: 0;
+}
+#pageControl .shaker .shakeHint.fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* QR Code Overlay */
+#pageMonitor .qr-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-neutral-000);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0.85;
+}
+
+#pageMonitor .qr-overlay .qrCode {
+  display: flex;
+  justify-content: center;
+}
+
+#pageMonitor .qr-overlay .qrInfo {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+#pageMonitor .qr-overlay .qrInfo p {
+  color: var(--color-neutral-1000);
+}
+
+#pageMonitor .qr-overlay .qrInfo .join {
+  color: var(--color-neutral-400);
+}
+
+#pageMonitor .qr-overlay .qrInfo .tap-prompt {
+  font-size: 1.5rem;
+  color: var(--color-neutral-1000);
+}
+
+/* Phone Shake Overlay */
+#pageMonitor .phone-shake-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-neutral-000);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0.85;
+}
+
+#pageMonitor .phone-shake-overlay .phone-shake-image,
+#pageMonitor .phone-shake-overlay .phone-shake-message {
+  animation: fadeInOut 2s ease-in-out;
+}
+
+#pageMonitor .phone-shake-overlay .phone-shake-message {
+  font-size: 1.5rem;
+  color: var(--color-neutral-1000);
+  margin-top: 1rem;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Screen width check overlay - CSS only */
+.screen-width-overlay {
+  display: none;
+}
+
+@media (max-width: 959px) {
+  #pageMonitor .qr-overlay {
+    display: none;
+  }
+  #pageHome .screen-width-overlay,
+  #pageMonitor .screen-width-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--color-neutral-000);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.85;
+    z-index: 9999;
+  }
+
+  .screen-width-message {
+    text-align: center;
+    padding: 2rem;
+    color: var(--color-neutral-1000);
+  }
+
+  .screen-width-message p {
+    font-size: 1.25rem;
+    margin: 0.5rem 0;
+  }
 }

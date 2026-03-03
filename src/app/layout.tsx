@@ -50,6 +50,13 @@ export default async function RootLayout({ children }: LayoutProps) {
       <body className={notoSans.className}>
         {children}
 
+        {/* Screen width check overlay - shown via CSS on narrow screens */}
+        <div className="screen-width-overlay">
+          <div className="screen-width-message">
+            <p>This app requires a minimum screen width of 960px.</p>
+          </div>
+        </div>
+
         <Script
           id="set-page-id"
           strategy="afterInteractive"
